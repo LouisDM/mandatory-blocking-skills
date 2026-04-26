@@ -1,0 +1,39 @@
+# MB-Protocol Integration for Cursor IDE
+# Paste this into your .cursorrules file
+
+# === MANDATORY BLOCKING RULES ===
+# These rules are BLOCKING. Any code generation or modification
+# MUST follow the checkpoint-verify-feedback cycle.
+
+## Rule 1: Test Before Commit (BLOCKING)
+Before declaring any task "done", you MUST:
+1. Run the test suite: `npm test` or `pytest`
+2. Verify ALL tests pass
+3. If tests fail → STOP → Fix → Re-test
+4. Only then proceed to commit
+
+## Rule 2: Commit with Context (BLOCKING)
+Every git commit MUST include:
+- Conventional commit format: `type(scope): message`
+- Reference to the issue/requirement being addressed
+- No commit without running `git diff --cached` review
+
+## Rule 3: Deploy Verification (BLOCKING)
+After any deployment action:
+1. Run health check: `curl /health`
+2. Verify HTTP 200
+3. Run smoke tests
+4. Write deployment confirmation to designated channel
+
+## Rule 4: Error Reporting (BLOCKING)
+Any error that stops execution MUST:
+1. Capture full error log
+2. Identify root cause (not just symptom)
+3. Suggest fix
+4. Report to issue tracker before exiting
+
+# === IRON RULES ===
+# 1. Never claim completion without verification
+# 2. Never silently exit on error
+# 3. No feedback record = task not executed
+# 4. Check Iron Rules before marking any task complete
