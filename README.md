@@ -147,6 +147,35 @@ Reference: https://github.com/LouisDM/MB-Protocol
 
 ---
 
+## Verify It Yourself
+
+Don't trust our data. **Run the experiment yourself.**
+
+We provide a complete verification kit:
+
+```bash
+cd experiments/verification-kit
+
+# 1. Start the mock app
+python mock-app/main.py
+
+# 2. Run baseline test (no MB-Protocol)
+python scripts/run-experiment.py --mode baseline --count 5
+
+# 3. Run MB-Protocol test
+python scripts/run-experiment.py --mode mb-protocol --count 5
+
+# 4. Compare your results
+cat baseline-results.json
+cat mb-protocol-results.json
+```
+
+See [`experiments/verification-kit/VERIFY.md`](experiments/verification-kit/VERIFY.md) for the full guide.
+
+> **We need your data.** Submit your results via PR to [`docs/EXPERIMENTS.md`](docs/EXPERIMENTS.md).
+
+---
+
 ## Case Study: INT-104 Guestbook Project
 
 **Setup**: 3-Agent Harness (Planner → Generator → Evaluator) on Multica platform
