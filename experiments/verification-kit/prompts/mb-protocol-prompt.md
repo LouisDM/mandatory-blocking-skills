@@ -1,4 +1,4 @@
-# MB-Protocol Prompt (Experimental Group)
+# Mandatory Blocking Prompt (Experimental Group)
 # Full MANDATORY BLOCKING format with Iron Rules.
 
 ## Iron Rules (Execute Before ANY Action)

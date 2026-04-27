@@ -1,8 +1,8 @@
-# MB-Protocol Specification v1.0
+# Mandatory Blocking Specification v1.0
 
 ## 1. Overview
 
-MB-Protocol (Mandatory Blocking Protocol) is a prompt engineering standard that defines how AI Agents must handle critical non-result steps in automated workflows.
+Mandatory Blocking is a set of prompt engineering patterns that defines how AI Agents must handle critical non-result steps in automated workflows.
 
 **Version**: 1.0  
 **Status**: Draft Standard  
@@ -80,7 +80,7 @@ Required formatting patterns:
 
 ## 5. Verification Methodology
 
-To claim MB-Protocol compliance:
+To claim Mandatory Blocking compliance:
 
 1. **Static Check**: Skill file contains all required formatting patterns
 2. **Dynamic Check**: Agent execution produces verifiable artifacts (comments, logs, files)

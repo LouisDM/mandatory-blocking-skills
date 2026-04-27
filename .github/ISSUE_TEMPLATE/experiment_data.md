@@ -1,6 +1,6 @@
 ---
 name: Share Experiment Data
-description: Contribute your real-world MB-Protocol results
+description: Contribute your real-world Mandatory Blocking results
 title: "[Data] "
 labels: [experiment]
 ---
@@ -16,7 +16,7 @@ labels: [experiment]
 
 ## Results
 
-### Baseline (No MB-Protocol)
+### Baseline (No Mandatory Blocking)
 
 | Run | Task ID | Feedback Written? |
 |-----|---------|-------------------|
@@ -26,7 +26,7 @@ labels: [experiment]
 
 **Rate**: _% (_/_)
 
-### MB-Protocol (With BLOCKING)
+### Mandatory Blocking (With BLOCKING)
 
 | Run | Task ID | Feedback Written? |
 |-----|---------|-------------------|

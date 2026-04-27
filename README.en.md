@@ -24,7 +24,7 @@ In automated workflows, we observed a critical pattern:
 
 This is the **Silent Failure** problem: the Agent believes it completed the task, but the external world has no record of it.
 
-| Metric | Before MB-Protocol | After MB-Protocol |
+| Metric | Before Mandatory Blocking | After Mandatory Blocking |
 |--------|-------------------|-------------------|
 | **Feedback Writeback Rate** | 0% (0/8 tasks) | **100% (7/7 tasks)** |
 | **Deployment Success Rate** | ~60% | **~90%** |
@@ -40,7 +40,7 @@ This is the **Silent Failure** problem: the Agent believes it completed the task
 Issue #104 Guestbook Project
 
 +-----------------------------------------+
-|  Baseline (No MB-Protocol)              |
+|  Baseline (No Mandatory Blocking)              |
 +-----------------------------------------+
 |  Comments: (empty)                      |
 |  Status: done                           |
@@ -53,7 +53,7 @@ Issue #104 Guestbook Project
 +-----------------------------------------+
 
 +-----------------------------------------+
-|  MB-Protocol (With BLOCKING)            |
+|  Mandatory Blocking (With BLOCKING)            |
 +-----------------------------------------+
 |  Comments:                              |
 |  +-------------------------------+      |
@@ -126,14 +126,14 @@ See [docs/MECHANISM.md](docs/MECHANISM.md) and [docs/EXPERIMENTS.md](docs/EXPERI
 
 **These prompt patterns cannot replace infrastructure-level guarantees:**
 
-| Problem Type | What MB-Protocol Can Do | What You Actually Need |
+| Problem Type | What Mandatory Blocking Can Do | What You Actually Need |
 |-------------|------------------------|----------------------|
 | Agent "forgets" to write feedback | Lower skip probability with strong constraint wording | Framework callbacks / audit logs |
 | Deployment returns 502 | Ask for verification in the prompt | Health check probes / circuit breakers |
 | Tool call fails | Ask for retry and reporting | Exponential backoff / Saga patterns |
 | State inconsistency | Ask to verify before writing back | Database transactions / event sourcing |
 
-**MB-Protocol is a "reminder sticker" at the prompt level, not a "safety net" at the system architecture level.**
+**Mandatory Blocking is a "reminder sticker" at the prompt level, not a "safety net" at the system architecture level.**
 
 For critical operations (money transfers, data deletion, production deployments), use **code-level hard constraints**, not LLM "self-discipline."
 
@@ -186,12 +186,12 @@ Check failed → Wait 3s → Retry (Max 2) → Execute Fallback
 
 ## How It Works
 
-MB-Protocol doesn't work by "redistributing attention weights." It works through **behavioral cost conditioning** and **task-boundary psychology**.
+Mandatory Blocking doesn't work by "redistributing attention weights." It works through **behavioral cost conditioning** and **task-boundary psychology**.
 
 Detailed mechanism: [docs/MECHANISM.md](docs/MECHANISM.md)
 
 **One-sentence summary**:
-> Task decomposition is the foundation (reduces forget-rate). MB-Protocol is the insurance (prevents treating feedback as optional after core work is done).
+> Task decomposition is the foundation (reduces forget-rate). Mandatory Blocking is the insurance (prevents treating feedback as optional after core work is done).
 
 ---
 
@@ -209,7 +209,7 @@ curl -o .claude/skills/mb-protocol/evaluator-skill.md \
 
 Add to any system prompt:
 ```
-Adhere to the MB-Protocol for all mandatory execution steps.
+Adhere to the Mandatory Blocking for all mandatory execution steps.
 Reference: https://github.com/LouisDM/mandatory-blocking-skills
 ```
 
@@ -228,7 +228,7 @@ python scripts/run-experiment.py --mode mb-protocol --count 5
 
 > These two protocols are **complementary**, not competing.
 
-| Dimension | Karpathy Skills | **MB-Protocol** |
+| Dimension | Karpathy Skills | **Mandatory Blocking** |
 |-----------|----------------|----------------|
 | **Problem** | Code quality (overcomplication, wrong assumptions, orthogonal edits) | **Execution reliability** (skipped steps, silent failures, missing feedback) |
 | **Focus** | Writing correctly | **Doing, verifying, reporting** |
@@ -241,10 +241,10 @@ python scripts/run-experiment.py --mode mb-protocol --count 5
 
 Karpathy Skills ensure the Agent **writes well** (simple, precise, no assumptions). But even perfect code is worth zero if the Agent "forgets" to deploy, "forgets" to write feedback, or "forgets" to verify.
 
-MB-Protocol ensures the Agent **finishes, verifies, and reports**.
+Mandatory Blocking ensures the Agent **finishes, verifies, and reports**.
 
 ```
-Karpathy Skills (write well) + MB-Protocol (finish it) = Reliable production Agent
+Karpathy Skills (write well) + Mandatory Blocking (finish it) = Reliable production Agent
 ```
 
 ---

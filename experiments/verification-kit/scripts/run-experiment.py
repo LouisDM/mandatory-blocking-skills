@@ -102,7 +102,7 @@ def run_single_experiment(mode, index):
 def main():
     parser = argparse.ArgumentParser(description="Mandatory Blocking Skills Verification Experiment")
     parser.add_argument("--mode", choices=["baseline", "mb-protocol"], required=True,
-                        help="Experiment mode: baseline (no MB-Protocol) or mb-protocol (with MB-Protocol)")
+                        help="Experiment mode: baseline (no Mandatory Blocking) or mb-protocol (with Mandatory Blocking)")
     parser.add_argument("--count", type=int, default=5,
                         help="Number of experiments to run (default: 5)")
     parser.add_argument("--output", default="results.json",

@@ -1,4 +1,4 @@
-# MB-Protocol Integration Guide
+# Mandatory Blocking Integration Guide
 
 ## Platform-Specific Setup
 
@@ -43,7 +43,7 @@ USE_MB_PROTOCOL=true
 
 Add to any system prompt:
 ```
-You MUST adhere to the MB-Protocol for all mandatory execution steps.
+You MUST adhere to the Mandatory Blocking for all mandatory execution steps.
 Key rules:
 1. Steps marked (BLOCKING, 不可跳过) cannot be skipped
 2. Every BLOCKING step must have a CHECKPOINT verification

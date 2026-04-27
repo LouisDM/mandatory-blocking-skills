@@ -12,7 +12,7 @@
 
 ## Experiment Results
 
-### Baseline (No MB-Protocol)
+### Baseline (No Mandatory Blocking)
 
 | Run | Issue ID | Comments Written? | Comment Count | Issue Status |
 |-----|----------|------------------|---------------|--------------|
@@ -28,7 +28,7 @@
 - Without Comments: Y
 - **Comment Rate: X%**
 
-### MB-Protocol (With BLOCKING)
+### Mandatory Blocking (With BLOCKING)
 
 | Run | Issue ID | Comments Written? | Comment Count | Issue Status |
 |-----|----------|------------------|---------------|--------------|
@@ -38,7 +38,7 @@
 | 4 | | Yes / No | | |
 | 5 | | Yes / No | | |
 
-**MB-Protocol Summary**:
+**Mandatory Blocking Summary**:
 - Total Runs: 5
 - With Comments: X
 - Without Comments: Y
@@ -46,7 +46,7 @@
 
 ## Comparison
 
-| Metric | Baseline | MB-Protocol | Delta |
+| Metric | Baseline | Mandatory Blocking | Delta |
 |--------|----------|-------------|-------|
 | Comment Rate | X% | Y% | +Z% |
 

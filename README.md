@@ -40,7 +40,7 @@ Agent 擅长**做事**，但不擅长**确认自己做了**。
 Issue #104 留言板项目
 
 ┌─────────────────────────────────────────┐
-│  Baseline (无 MB-Protocol)              │
+│  Baseline (无 Mandatory Blocking)              │
 ├─────────────────────────────────────────┤
 │  评论: (空白)                           │
 │  状态: done                             │
@@ -53,7 +53,7 @@ Issue #104 留言板项目
 └─────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────┐
-│  MB-Protocol (有 BLOCKING)              │
+│  Mandatory Blocking (有 BLOCKING)              │
 ├─────────────────────────────────────────┤
 │  评论:                                  │
 │  ┌─────────────────────────────────┐    │
@@ -124,16 +124,16 @@ graph TD
 
 ## 边界声明
 
-**MB-Protocol 不能替代基础设施层面的保障**：
+**Mandatory Blocking 不能替代基础设施层面的保障**：
 
-| 问题类型 | MB-Protocol 能做什么 | 你需要什么 |
+| 问题类型 | Mandatory Blocking 能做什么 | 你需要什么 |
 |---------|---------------------|-----------|
 | Agent "忘记"写反馈 | 用强约束措辞降低跳过概率 | 框架级回调 / 审计日志 |
 | 部署返回 502 | 在 Prompt 里要求验证 | 健康检查探针 / 断路器 |
 | 工具调用失败 | 要求重试和报告 | 指数退避 / Saga 模式 |
 | 状态不一致 | 要求验证后写回 | 数据库事务 / 事件溯源 |
 
-**MB-Protocol 是提示词层面的"提醒贴纸"，不是系统架构的"安全网"。**
+**Mandatory Blocking 是提示词层面的"提醒贴纸"，不是系统架构的"安全网"。**
 
 对于关键操作（资金转账、数据删除、生产部署），请使用**代码层面的硬性约束**，而非依赖 LLM 的"自觉性"。
 
@@ -192,12 +192,12 @@ LLM 对格式模式高度敏感：
 
 ## 原理说明
 
-MB-Protocol 不是通过"重新分配注意力权重"起作用，而是通过**行为概率约束**和**任务边界心理学**。
+Mandatory Blocking 不是通过"重新分配注意力权重"起作用，而是通过**行为概率约束**和**任务边界心理学**。
 
 详细机制分析：[docs/MECHANISM.md](docs/MECHANISM.md)
 
 **一句话总结**：
-> 任务拆分是基础（降低遗忘率），MB-Protocol 是保险（防止完成核心工作后把反馈视为可选）。
+> 任务拆分是基础（降低遗忘率），Mandatory Blocking 是保险（防止完成核心工作后把反馈视为可选）。
 
 ---
 
@@ -216,7 +216,7 @@ curl -o .claude/skills/mb-protocol/evaluator-skill.md \
 
 在任何系统提示中加入：
 ```
-所有关键执行步骤必须遵循 MB-Protocol。
+所有关键执行步骤必须遵循 Mandatory Blocking。
 参考：https://github.com/LouisDM/mandatory-blocking-skills
 ```
 
@@ -228,10 +228,10 @@ cd experiments/verification-kit
 # 1. 启动模拟应用
 python mock-app/main.py
 
-# 2. 运行基线测试（无 MB-Protocol）
+# 2. 运行基线测试（无 Mandatory Blocking）
 python scripts/run-experiment.py --mode baseline --count 5
 
-# 3. 运行 MB-Protocol 测试
+# 3. 运行 Mandatory Blocking 测试
 python scripts/run-experiment.py --mode mb-protocol --count 5
 
 # 4. 对比你的结果
@@ -245,7 +245,7 @@ cat mb-protocol-results.json
 
 > 这两个协议是**互补的**，不是竞争的。
 
-| 维度 | Karpathy Skills | **MB-Protocol** |
+| 维度 | Karpathy Skills | **Mandatory Blocking** |
 |------|----------------|----------------|
 | **解决什么问题** | 代码质量（过度复杂、错误假设、无关修改） | **执行可靠性**（跳过步骤、静默失败、不反馈） |
 | **关注点** | 写得对不对 | **做没做、验没验** |
@@ -258,12 +258,12 @@ cat mb-protocol-results.json
 
 Karpathy Skills 确保 Agent **写得好**（简洁、精准、不假设）。但即使写得再好，如果 Agent "忘记"部署、"忘记"写反馈、"忘记"验证——结果仍然是零。
 
-MB-Protocol 确保 Agent **做完、验完、反馈完**。
+Mandatory Blocking 确保 Agent **做完、验完、反馈完**。
 
 **组合使用效果最佳：**
 
 ```
-Karpathy Skills (写好) + MB-Protocol (做完) = 可靠的生产级 Agent
+Karpathy Skills (写好) + Mandatory Blocking (做完) = 可靠的生产级 Agent
 ```
 
 ---

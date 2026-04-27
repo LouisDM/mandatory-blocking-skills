@@ -53,7 +53,7 @@ def baseline_exp(n):
     return {"mode": "baseline", "run": n, "has_comments": has, "count": len(result.get("comments", []))}
 
 def mb_protocol_exp(n):
-    """Agent executes MB-Protocol prompt with BLOCKING constraints."""
+    """Agent executes Mandatory Blocking prompt with BLOCKING constraints."""
     curl("POST", "/reset")
     time.sleep(0.3)
     issue = curl("POST", "/api/issues", {
@@ -109,7 +109,7 @@ def main():
         results.append(r)
         print(f"  Run {i}: comments={'YES' if r['has_comments'] else 'NO'} (count={r['count']})")
 
-    print("\n--- MB-Protocol (3 runs) ---")
+    print("\n--- Mandatory Blocking (3 runs) ---")
     for i in range(1, 4):
         r = mb_protocol_exp(i)
         results.append(r)
@@ -124,7 +124,7 @@ def main():
     print("RESULTS")
     print("=" * 60)
     print(f"Baseline:    {sum(1 for r in baseline if r['has_comments'])}/3 ({b_rate:.0f}%)")
-    print(f"MB-Protocol: {sum(1 for r in mb if r['has_comments'])}/3 ({m_rate:.0f}%)")
+    print(f"Mandatory Blocking: {sum(1 for r in mb if r['has_comments'])}/3 ({m_rate:.0f}%)")
     print(f"Delta:       +{m_rate - b_rate:.0f}%")
 
     # Save JSON

@@ -1,14 +1,14 @@
-# MB-Protocol Verification Guide
+# Mandatory Blocking Verification Guide
 
 > **Run this yourself. Get your own data.**
 
-This guide walks you through a controlled experiment to verify whether MB-Protocol actually improves Agent execution reliability.
+This guide walks you through a controlled experiment to verify whether Mandatory Blocking actually improves Agent execution reliability.
 
 ---
 
 ## What You'll Test
 
-| Metric | Baseline (No MB-Protocol) | MB-Protocol |
+| Metric | Baseline (No Mandatory Blocking) | Mandatory Blocking |
 |--------|--------------------------|-------------|
 | **Comment Writeback Rate** | Agent writes feedback after task completion | Agent writes feedback after task completion |
 | **Difference** | Standard step naming | `MANDATORY` + `BLOCKING` + Iron Rules |
@@ -72,7 +72,7 @@ Repeat for 5 iterations.
 
 ---
 
-## Step 3: Run MB-Protocol Experiment (Experimental Group)
+## Step 3: Run Mandatory Blocking Experiment (Experimental Group)
 
 ### 3.1 Start the experiment
 
@@ -80,7 +80,7 @@ Repeat for 5 iterations.
 python scripts/run-experiment.py --mode mb-protocol --count 5 --output mb-protocol-results.json
 ```
 
-### 3.2 Use the MB-Protocol prompt
+### 3.2 Use the Mandatory Blocking prompt
 
 Open `prompts/mb-protocol-prompt.md` and copy its contents.
 
@@ -125,7 +125,7 @@ Each file contains:
 
 Fill in this table with your results:
 
-| # | Baseline (Comments?) | MB-Protocol (Comments?) |
+| # | Baseline (Comments?) | Mandatory Blocking (Comments?) |
 |---|---------------------|------------------------|
 | 1 | Yes / No | Yes / No |
 | 2 | Yes / No | Yes / No |
@@ -143,7 +143,7 @@ We need data from diverse environments! Please share:
 - **Platform**: Claude Code / Cursor / AutoGPT / Other
 - **Model**: Claude 3.5 Sonnet / GPT-4 / Llama / etc.
 - **Baseline Rate**: X%
-- **MB-Protocol Rate**: Y%
+- **Mandatory Blocking Rate**: Y%
 - **Notes**: Any observations
 
 Submit via:
@@ -158,7 +158,7 @@ Submit via:
 | Condition | Comment Rate | Notes |
 |-----------|-------------|-------|
 | **Baseline** | 0-20% | Agent often "forgets" to write comments under context pressure |
-| **MB-Protocol** | 80-100% | BLOCKING format significantly improves compliance |
+| **Mandatory Blocking** | 80-100% | BLOCKING format significantly improves compliance |
 
 Your results may vary based on model, context length, and task complexity. That's exactly why we need more data!
 
@@ -207,9 +207,9 @@ cd experiments/verification-kit
 python scripts/run-experiment.py --mode baseline --count 5
 # Follow prompts, copy baseline prompt to your Agent
 
-# 3. Run MB-Protocol
+# 3. Run Mandatory Blocking
 python scripts/run-experiment.py --mode mb-protocol --count 5
-# Follow prompts, copy MB-Protocol prompt to your Agent
+# Follow prompts, copy Mandatory Blocking prompt to your Agent
 
 # 4. Compare results
 cat baseline-results.json

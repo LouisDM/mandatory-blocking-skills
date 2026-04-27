@@ -151,37 +151,37 @@ def test_prompts():
         "verified"
     ))
 
-    # MB-Protocol prompt checks
+    # Mandatory Blocking prompt checks
     with open("../prompts/mb-protocol-prompt.md", "r") as f:
         mb = f.read()
 
     results.append((
-        "MB-Protocol prompt exists",
+        "Mandatory Blocking prompt exists",
         len(mb) > 100,
         f"{len(mb)} chars"
     ))
     results.append((
-        "MB-Protocol prompt has MANDATORY",
+        "Mandatory Blocking prompt has MANDATORY",
         "MANDATORY" in mb,
         "verified"
     ))
     results.append((
-        "MB-Protocol prompt has BLOCKING",
+        "Mandatory Blocking prompt has BLOCKING",
         "BLOCKING" in mb,
         "verified"
     ))
     results.append((
-        "MB-Protocol prompt has CHECKPOINT",
+        "Mandatory Blocking prompt has CHECKPOINT",
         "CHECKPOINT" in mb,
         "verified"
     ))
     results.append((
-        "MB-Protocol prompt has Iron Rules",
+        "Mandatory Blocking prompt has Iron Rules",
         "Iron Rules" in mb or "绝对禁止" in mb,
         "verified"
     ))
     results.append((
-        "MB-Protocol prompt has retry logic",
+        "Mandatory Blocking prompt has retry logic",
         "Retry" in mb or "重试" in mb,
         "verified"
     ))
@@ -221,7 +221,7 @@ def simulate_experiment(mode: str, count: int = 3):
 
         # Simulate Agent behavior
         if mode == "mb-protocol":
-            # Agent with MB-Protocol writes comment
+            # Agent with Mandatory Blocking writes comment
             req = urllib.request.Request(
                 f"{API_BASE}/api/issues/{issue_id}/comments",
                 data=json.dumps({"content": f"Implementation complete. Tests passed. [{mode} #{i+1}]"}).encode(),
@@ -258,7 +258,7 @@ def run_experiments():
     log("[4/5] Running baseline simulation...")
     baseline_results, baseline_with, baseline_rate = simulate_experiment("baseline", 3)
 
-    log("[5/5] Running MB-Protocol simulation...")
+    log("[5/5] Running Mandatory Blocking simulation...")
     mb_results, mb_with, mb_rate = simulate_experiment("mb-protocol", 3)
 
     return {
@@ -318,11 +318,11 @@ def generate_report(api_passed, api_total, api_results, prompt_passed, prompt_to
         "",
         f"Baseline (no protocol): **{baseline_rate:.0f}%** feedback rate ({experiment_data['baseline']['with_comments']}/3)",
         f"",
-        f"MB-Protocol (with BLOCKING): **{mb_rate:.0f}%** feedback rate ({experiment_data['mb_protocol']['with_comments']}/3)",
+        f"Mandatory Blocking (with BLOCKING): **{mb_rate:.0f}%** feedback rate ({experiment_data['mb_protocol']['with_comments']}/3)",
         f"",
         f"**Delta**: +{delta:.0f} percentage points",
         f"",
-        "| Run | Baseline Comments? | MB-Protocol Comments? |",
+        "| Run | Baseline Comments? | Mandatory Blocking Comments? |",
         "|-----|-------------------|----------------------|",
     ])
 
@@ -338,7 +338,7 @@ def generate_report(api_passed, api_total, api_results, prompt_passed, prompt_to
         "## 4. Key Findings",
         "",
         f"- **Baseline**: Agent simulated without BLOCKING constraints → {baseline_rate:.0f}% feedback rate",
-        f"- **MB-Protocol**: Agent simulated with MANDATORY + BLOCKING + CHECKPOINT → {mb_rate:.0f}% feedback rate",
+        f"- **Mandatory Blocking**: Agent simulated with MANDATORY + BLOCKING + CHECKPOINT → {mb_rate:.0f}% feedback rate",
         f"- **Improvement**: +{delta:.0f}% increase in feedback compliance",
         "",
         "## 5. Test Methodology",

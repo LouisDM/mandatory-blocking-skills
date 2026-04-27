@@ -1,10 +1,10 @@
 ---
 name: mb-protocol-evaluator
-description: Evaluator Agent skill with full MB-Protocol compliance. Tool-based verification with mandatory feedback writeback.
+description: Evaluator Agent skill with full Mandatory Blocking compliance. Tool-based verification with mandatory feedback writeback.
 user_invocable: false
 ---
 
-# Evaluator Agent — MB-Protocol Compliant
+# Evaluator Agent — Mandatory Blocking Compliant
 
 ## Iron Rules (Execute Before ANY Action)
 
