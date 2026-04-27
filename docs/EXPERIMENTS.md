@@ -5,7 +5,7 @@
 ## Experiment 1: Comment Writeback Rate (Primary Metric)
 
 ### Setup
-- **Platform**: Multica (localhost:8080) + Claude Code Agent (Sonnet 4.6)
+- **Platform**: Multica (localhost:8080) + Claude Code Agent (Kimi 2.6)
 - **Workflow**: 3-Agent Harness (Planner → Generator → Evaluator)
 - **Tasks**: Production issues requiring development + deployment + evaluation
 - **Measurement**: Did the Agent write a comment back to the Issue after execution?
@@ -28,7 +28,7 @@ All 7 MB-Protocol tasks successfully wrote comments after adding BLOCKING constr
 - Baseline tasks used standard skill format: `Step 5 — Write Issue comment`
 - MB-Protocol tasks used: `MANDATORY STEP 5 — Write Issue comment (BLOCKING, 不可跳过)`
 - The ONLY difference between baseline and MB-Protocol was the step naming format and Iron Rules
-- All tasks used the same model (Claude Sonnet 4.6), same platform, same runtime
+- All tasks used the same model (Kimi 2.6), same platform, same runtime
 
 ---
 
@@ -108,6 +108,39 @@ While this is not a controlled experiment (different tasks, different times), th
 
 ---
 
+## Experiment 5: Cross-Model Validation (DeepSeek V4 Pro)
+
+### Setup
+- **Platform**: Claude Code (via OpenRouter) + DeepSeek V4 Pro
+- **Task**: Same Todo CRUD verification (15-step prompt)
+- **Method**: Real Agent execution, 3 runs per condition
+- **Date**: 2026-04-27
+
+### Results
+
+| Condition | Runs | Feedback Written | Rate |
+|-----------|------|-----------------|------|
+| Baseline (no blocking) | 3 | 0 | **0%** |
+| MB-Protocol (with BLOCKING) | 3 | 3 | **100%** |
+
+### Run Details
+
+| Run | Baseline | MB-Protocol |
+|-----|---------|-------------|
+| 1 | No comment (b83f261c) | Commented (4bfd4ecf) |
+| 2 | No comment (9df34333) | Commented (30d8e045) |
+| 3 | No comment (f9ef58bd) | Commented (2266d449) |
+
+### Interpretation
+
+DeepSeek V4 Pro shows the **same pattern** as Kimi 2.6:
+- Without BLOCKING constraints, the Agent consistently skipped the weakly-worded Step 15 ("it would be good to write a comment")
+- With BLOCKING constraints, the Agent consistently wrote feedback and verified via CHECKPOINT
+
+This suggests the effect is **not model-specific** — both Kimi 2.6 and DeepSeek V4 Pro exhibit the same behavioral shift.
+
+---
+
 ## Limitations
 
 1. **Missing Critical Control Group**: The experiment compares "weak prompt" (Baseline) vs "weak prompt + ALL CAPS + BLOCKING + Iron Rules" (MB-Protocol). It does **not** include the crucial middle group: "weak prompt + strong consequence statement WITHOUT ALL CAPS formatting." This means we cannot distinguish whether the effect comes from (a) strong constraint wording alone, or (b) the specific ALL CAPS + BLOCKING format. Both are plausible explanations.
@@ -116,7 +149,7 @@ While this is not a controlled experiment (different tasks, different times), th
 
 3. **Small Sample Size**: 15 tasks total (8 baseline + 7 MB-Protocol). This is insufficient for statistical significance. The effect size appears large (0% → 100%), but with such small N, variance estimates are unreliable.
 
-4. **Single Model**: Tested only on Claude Sonnet 4.6. Other models (GPT-4o, Gemini, Llama) may respond differently to ALL CAPS formatting.
+4. **Limited Model Coverage**: Tested on Kimi 2.6 and DeepSeek V4 Pro. Other models (GPT-4o, Gemini, Llama, Qwen) remain untested.
 
 5. **Single Platform**: Tested only on one internal platform (Multica) + Claude Code. Generalization to Cursor, AutoGPT, or other runtimes is unverified.
 

@@ -113,5 +113,5 @@ If human approval is required, the BLOCKING step should:
 ## 7. References
 
 - Inspired by: CI/CD Quality Gates, OS Blocking I/O
-- Tested on: Claude Code (Sonnet 4.6), various Agent platforms
+- Tested on: Claude Code with Kimi 2.6, OpenRouter with DeepSeek V4 Pro, and various Agent platforms
 - Related: LangGraph interrupts (human-in-the-loop variant)
