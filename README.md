@@ -1,10 +1,12 @@
-# MB-Protocol: 强制阻塞协议
+# Mandatory Blocking Skills
+
+> **Agent 可靠性提示词模式 · 可复现验证工具**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![CI](https://github.com/LouisDM/mandatory-blocking-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/LouisDM/mandatory-blocking-skills/actions)
 [![Python](https://img.shields.io/badge/Python-3.11%2B-blue)](requirements.txt)
 
-> **消除 Agent 工作流中的静默失败**
+**不是协议，不是标准，不是生产级方案。** 是一组经过探索性实验检验的提示词模式，附赠一个可复现验证套件。
 
 [English](./README.en.md) | 简体中文
 
@@ -74,9 +76,9 @@ Issue #104 留言板项目
 
 ## 解决方案
 
-MB-Protocol 是一套**提示工程技巧**，通过结构化的强约束措辞，提高 Agent 完成验证和反馈步骤的概率。
+这是一组**提示词模式**，用强约束措辞提高 Agent 完成验证和反馈步骤的概率。
 
-它不是架构方案，不替代框架级的状态机、事务或审计系统。它只在提示词层面增加一层"保险"——让关键步骤更难被跳过。
+它不是架构方案，不替代框架级的状态机、事务或审计系统。它是**低成本、低风险的"宽胶带"**——能帮上忙，但不能担保。
 
 | 支柱 | 实现方式 | 解决什么问题 |
 |------|---------|-----------|
@@ -104,7 +106,23 @@ graph TD
 
 ---
 
-## 这不是什么
+## 诚实定位
+
+**这个项目是**：
+- 一组 Agent 可靠性提示词模式（"检查后再继续"、"验证后写回"）
+- 一个可复现验证套件（你可以拿来测试自己的 Agent）
+- 一份探索性实验记录（Kimi 2.6 + DeepSeek V4 Pro，n=21）
+
+**这个项目不是**：
+- 不是"协议"或"标准"——没有任何形式化规范、治理流程或多实现互操作
+- 不是生产级安全方案——面对提示注入、模型漂移、对抗输入完全无力
+- 不是架构替代品——不能替代框架级状态机、事务、审计日志或断路器
+
+详见 [docs/MECHANISM.md](docs/MECHANISM.md) 和 [docs/EXPERIMENTS.md](docs/EXPERIMENTS.md#limitations)。
+
+---
+
+## 边界声明
 
 **MB-Protocol 不能替代基础设施层面的保障**：
 

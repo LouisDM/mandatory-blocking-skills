@@ -1,10 +1,12 @@
-# MB-Protocol: Mandatory Blocking Protocol for AI Agents
+# Mandatory Blocking Skills
+
+> **Agent Reliability Prompt Patterns · Reproducible Verification Kit**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![CI](https://github.com/LouisDM/mandatory-blocking-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/LouisDM/mandatory-blocking-skills/actions)
 [![Python](https://img.shields.io/badge/Python-3.11%2B-blue)](requirements.txt)
 
-> **A Prompt Engineering Technique to Reduce Silent Failures in Agentic Workflows**
+**Not a protocol. Not a standard. Not production-grade.** A set of prompt patterns tested through exploratory experiments, with a reproducible verification kit.
 
 English | [简体中文](./README.md)
 
@@ -74,9 +76,9 @@ Issue #104 Guestbook Project
 
 ## The Solution
 
-MB-Protocol is a **prompt engineering technique** that uses structured strong-constraint wording to increase the probability that Agents complete verification and feedback steps.
+This is a set of **prompt patterns** that use strong-constraint wording to increase the probability that Agents complete verification and feedback steps.
 
-It is not an architecture solution and does not replace framework-level state machines, transactions, or audit systems. It only adds a layer of "insurance" at the prompt level — making critical steps harder to skip.
+It is not an architecture solution and does not replace framework-level state machines, transactions, or audit systems. It's a **low-cost, low-risk "duct tape"** — helpful, but not guaranteed.
 
 | Pillar | Implementation | Purpose |
 |--------|---------------|---------|
@@ -104,9 +106,25 @@ graph TD
 
 ---
 
-## What This Is NOT
+## Honest Positioning
 
-**MB-Protocol cannot replace infrastructure-level guarantees:**
+**This project IS**:
+- A collection of Agent reliability prompt patterns ("verify before continuing", "write-back after execution")
+- A reproducible verification kit (you can test your own Agent with it)
+- An exploratory experiment log (Kimi 2.6 + DeepSeek V4 Pro, n=21)
+
+**This project IS NOT**:
+- Not a "protocol" or "standard" — no formal specification, governance, or multi-implementor interoperability
+- Not a production-grade safety solution — defenseless against prompt injection, model drift, adversarial input
+- Not an architecture replacement — cannot replace framework-level state machines, transactions, audit logs, or circuit breakers
+
+See [docs/MECHANISM.md](docs/MECHANISM.md) and [docs/EXPERIMENTS.md](docs/EXPERIMENTS.md#limitations) for details.
+
+---
+
+## Boundary Statement
+
+**These prompt patterns cannot replace infrastructure-level guarantees:**
 
 | Problem Type | What MB-Protocol Can Do | What You Actually Need |
 |-------------|------------------------|----------------------|
