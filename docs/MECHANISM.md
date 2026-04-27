@@ -10,7 +10,7 @@ But that's **not** why MB-Protocol works.
 
 ## The Real Mechanism: Behavioral Cost, Not Attention Allocation
 
-MB-Protocol doesn't redistribute attention weights. It changes the **behavior probability distribution** through two channels:
+MB-Protocol doesn't redistribute attention weights. It **may** change the **behavior probability distribution** through two channels (both are hypotheses based on observation, not proven mechanisms):
 
 ### 1. RLHF Constraint Conditioning
 

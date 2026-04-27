@@ -1,5 +1,7 @@
 # MB-Protocol Experiments & Data
 
+> **Important**: This document records exploratory observations, not rigorous science. The data should be treated as **qualitative signals** ("something interesting is happening here") rather than **quantitative proof** ("this method is X% better"). All known limitations are listed in the [Limitations](#limitations) section.
+
 ## Experiment 1: Comment Writeback Rate (Primary Metric)
 
 ### Setup
@@ -108,10 +110,21 @@ While this is not a controlled experiment (different tasks, different times), th
 
 ## Limitations
 
-1. **Small Sample Size**: 15 tasks total. Need larger-scale validation.
-2. **Single Model**: Tested only on Claude Sonnet 4.6. Results may vary on other models.
-3. **Single Platform**: Tested only on Multica + Claude Code. Generalization to other platforms TBD.
-4. **No A/B Controls**: Baseline and MB-Protocol tasks were not run simultaneously with identical inputs.
+1. **Missing Critical Control Group**: The experiment compares "weak prompt" (Baseline) vs "weak prompt + ALL CAPS + BLOCKING + Iron Rules" (MB-Protocol). It does **not** include the crucial middle group: "weak prompt + strong consequence statement WITHOUT ALL CAPS formatting." This means we cannot distinguish whether the effect comes from (a) strong constraint wording alone, or (b) the specific ALL CAPS + BLOCKING format. Both are plausible explanations.
+
+2. **Non-Blinded Experimenter**: The same person designed the prompts, ran the experiments, and evaluated the results. This introduces confirmation bias — the evaluator knew which condition each task belonged to.
+
+3. **Small Sample Size**: 15 tasks total (8 baseline + 7 MB-Protocol). This is insufficient for statistical significance. The effect size appears large (0% → 100%), but with such small N, variance estimates are unreliable.
+
+4. **Single Model**: Tested only on Claude Sonnet 4.6. Other models (GPT-4o, Gemini, Llama) may respond differently to ALL CAPS formatting.
+
+5. **Single Platform**: Tested only on one internal platform (Multica) + Claude Code. Generalization to Cursor, AutoGPT, or other runtimes is unverified.
+
+6. **No A/B Controls**: Baseline and MB-Protocol tasks were not run simultaneously with identical inputs. Tasks differed in complexity and context, confounding the comparison.
+
+7. **No Quality Metrics**: We measured "was a comment written?" but not "was the comment accurate, actionable, or useful?" An Agent could write gibberish to satisfy the BLOCKING constraint.
+
+8. **Self-Reported Data**: All metrics were collected by the project author without independent verification.
 
 ## Call for Contributions
 

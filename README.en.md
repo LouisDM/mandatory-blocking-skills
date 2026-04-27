@@ -4,7 +4,7 @@
 [![CI](https://github.com/LouisDM/mandatory-blocking-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/LouisDM/mandatory-blocking-skills/actions)
 [![Python](https://img.shields.io/badge/Python-3.11%2B-blue)](requirements.txt)
 
-> **A Prompt Engineering Standard to Eliminate Silent Failures in Agentic Workflows**
+> **A Prompt Engineering Technique to Reduce Silent Failures in Agentic Workflows**
 
 English | [简体中文](./README.md)
 
@@ -29,6 +29,8 @@ This is the **Silent Failure** problem: the Agent believes it completed the task
 | **Avg Fix Iterations** | 5-8 rounds | **2-3 rounds** |
 
 *Data from multi-Agent collaboration pipelines running on real automation tasks.*
+
+> **Honest Disclosure**: The data above comes from a small-sample exploratory experiment (n=15) and **lacks statistical significance**. Key limitations: missing a critical control group (strong constraint wording without ALL CAPS formatting), non-blinded experimenter, tested only on Claude Sonnet 4.6. See [docs/EXPERIMENTS.md](docs/EXPERIMENTS.md#limitations) for details.
 
 ### Before vs After
 
@@ -72,11 +74,13 @@ Issue #104 Guestbook Project
 
 ## The Solution
 
-**MB-Protocol** treats critical non-result steps (writing feedback, verifying deployments, checking health endpoints) as **blocking operations** — just like a synchronous I/O call that doesn't return until completion.
+MB-Protocol is a **prompt engineering technique** that uses structured strong-constraint wording to increase the probability that Agents complete verification and feedback steps.
+
+It is not an architecture solution and does not replace framework-level state machines, transactions, or audit systems. It only adds a layer of "insurance" at the prompt level — making critical steps harder to skip.
 
 | Pillar | Implementation | Purpose |
 |--------|---------------|---------|
-| **Semantic Anchoring** | `MANDATORY` + `BLOCKING` keywords in ALL CAPS | Establishes highest attention weight in LLM attention mechanism |
+| **Semantic Anchoring** | `MANDATORY` + `BLOCKING` keywords in ALL CAPS | Higher compliance probability in instruction-following models (empirical observation, not attention mechanism explanation) |
 | **Empirical Check** | `CHECKPOINT` directive with tool-based verification | Transforms "I think I did it" → "I verified I did it" |
 | **Self-Healing Loop** | `Retry-Wait-Fallback` logic | Handles transient failures without breaking the flow |
 
@@ -100,6 +104,23 @@ graph TD
 
 ---
 
+## What This Is NOT
+
+**MB-Protocol cannot replace infrastructure-level guarantees:**
+
+| Problem Type | What MB-Protocol Can Do | What You Actually Need |
+|-------------|------------------------|----------------------|
+| Agent "forgets" to write feedback | Lower skip probability with strong constraint wording | Framework callbacks / audit logs |
+| Deployment returns 502 | Ask for verification in the prompt | Health check probes / circuit breakers |
+| Tool call fails | Ask for retry and reporting | Exponential backoff / Saga patterns |
+| State inconsistency | Ask to verify before writing back | Database transactions / event sourcing |
+
+**MB-Protocol is a "reminder sticker" at the prompt level, not a "safety net" at the system architecture level.**
+
+For critical operations (money transfers, data deletion, production deployments), use **code-level hard constraints**, not LLM "self-discipline."
+
+---
+
 ## The Three Pillars
 
 ### 1. Semantic Anchoring
@@ -110,7 +131,7 @@ LLMs are sensitive to formatting patterns:
 
 | Pattern | Effect |
 |---------|--------|
-| `MANDATORY STEP` (ALL CAPS) | Higher attention weight than `Step` |
+| `MANDATORY STEP` (ALL CAPS) | Higher compliance probability in instruction-following models |
 | `(BLOCKING, 不可跳过)` | Bracketed emphasis triggers compliance behavior |
 | `绝对禁止：...` | Negative imperative creates strong avoidance pattern |
 | `不写反馈，任务不算完成` | Clear consequence statement |
