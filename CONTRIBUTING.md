@@ -1,20 +1,20 @@
-# Contributing to MB-Protocol
+# Contributing to Mandatory Blocking Skills
 
-Thank you for your interest in making MB-Protocol better! This project thrives on real-world data and cross-platform validation.
+Thank you for your interest in making this project better! It thrives on real-world data and cross-platform validation.
 
 ## How to Contribute
 
 ### 1. Share Your Data
 
-The most valuable contribution is **empirical data**. If you use MB-Protocol:
+The most valuable contribution is **empirical data**. If you use this protocol:
 
-- Record: tasks executed, comment writeback rate, deployment success rate
+- Record: tasks executed, feedback writeback rate, deployment success rate
 - Submit via PR to `docs/EXPERIMENTS.md`
 - Include: platform, model, protocol version
 
 ### 2. Add Platform Examples
 
-Help others integrate MB-Protocol:
+Help others integrate this protocol:
 
 - Add example skill files for new platforms
 - Test existing examples and report issues
@@ -24,7 +24,7 @@ Help others integrate MB-Protocol:
 
 - Propose clarifications to the spec
 - Suggest new Iron Rules based on your experience
-- Report edge cases where MB-Protocol fails
+- Report edge cases where the protocol fails
 
 ### 4. Spread the Word
 

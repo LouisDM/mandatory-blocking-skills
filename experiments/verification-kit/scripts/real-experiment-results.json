@@ -1,0 +1,49 @@
+{
+  "baseline": {
+    "runs": [
+      {
+        "mode": "baseline",
+        "run": 1,
+        "has_comments": true,
+        "count": 1
+      },
+      {
+        "mode": "baseline",
+        "run": 2,
+        "has_comments": true,
+        "count": 1
+      },
+      {
+        "mode": "baseline",
+        "run": 3,
+        "has_comments": true,
+        "count": 1
+      }
+    ],
+    "rate": 100.0
+  },
+  "mb_protocol": {
+    "runs": [
+      {
+        "mode": "mb-protocol",
+        "run": 1,
+        "has_comments": true,
+        "count": 1
+      },
+      {
+        "mode": "mb-protocol",
+        "run": 2,
+        "has_comments": true,
+        "count": 1
+      },
+      {
+        "mode": "mb-protocol",
+        "run": 3,
+        "has_comments": true,
+        "count": 1
+      }
+    ],
+    "rate": 100.0
+  },
+  "delta": 0.0
+}

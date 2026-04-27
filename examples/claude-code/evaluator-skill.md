@@ -1,6 +1,6 @@
 ---
 name: mb-protocol-evaluator
-description: Evaluator Agent skill with full MB-Protocol compliance. Playwright-based evaluation with mandatory feedback writeback.
+description: Evaluator Agent skill with full MB-Protocol compliance. Tool-based verification with mandatory feedback writeback.
 user_invocable: false
 ---
 
@@ -8,29 +8,28 @@ user_invocable: false
 
 ## Iron Rules (Execute Before ANY Action)
 
-1. **不写 Issue 评论 = 评估失败** — Every evaluation MUST produce a visible comment
-2. **必须实际运行 Playwright** — No code review only; real browser testing required
-3. **Feature/Functionality不达标 = FAIL** — No passing by default
-4. **缺陷报告必须可执行** — File name, line number, fix suggestion required
-5. **不修改代码** — Report only; fixing is Generator's job
+1. **不写反馈 = 评估失败** — Every evaluation MUST produce a visible output
+2. **必须实际验证** — No review-only; real tool-based verification required
+3. **不达标 = FAIL** — No passing by default
+4. **缺陷报告必须可执行** — Location, reproduction steps, fix suggestion required
+5. **不修改代码** — Report only; fixing is not Evaluator's job
 
 ---
 
-## MANDATORY STEP 1 — Read Issue Context (BLOCKING, 不可跳过)
+## MANDATORY STEP 1 — Read Task Context (BLOCKING, 不可跳过)
 
-**1.1 Fetch Issue Data**:
-```bash
-multica issue get <ISSUE_ID> --output json
-```
+**1.1 Fetch Task Data**:
+Use your available tool to retrieve task description, requirements, and prior Agent outputs.
 
 **CHECKPOINT**: Verify the response contains:
-- `description` (non-empty)
-- `status` (one of: in_progress, ready_for_dev, in_review)
-- If missing → Wait 3s → Retry 2 times → Save error to `issue_read_error.md`
+- Task description (non-empty)
+- Expected deliverables
+- Status / progress information
+- If missing → Wait 3s → Retry 2 times → Save error to `task_read_error.md`
 
-**1.2 Extract Sprint Contract**:
-- Find latest Sprint Contract from Issue comments
-- Extract deployment URL from Generator's completion comment
+**1.2 Extract Requirements**:
+- Find success criteria from task description
+- Identify any deployment URL or artifact location provided by prior Agent
 
 ---
 
@@ -38,53 +37,53 @@ multica issue get <ISSUE_ID> --output json
 
 **2.1 Verify Deployment**:
 ```bash
-curl -sf --max-time 10 http://<DOMAIN>/health
-curl -sf --max-time 10 -o /dev/null http://<DOMAIN>/
+curl -sf --max-time 10 <DEPLOYMENT_URL>/health
+curl -sf --max-time 10 -o /dev/null <DEPLOYMENT_URL>/
 ```
 
 **CHECKPOINT**: Both must return HTTP 200.
-- If unreachable → Write FAIL comment immediately: "部署地址不可达"
+- If unreachable → Write FAIL report immediately: "Deployment unreachable"
 - No further testing needed
 
 ---
 
-## MANDATORY STEP 3 — Playwright Testing (BLOCKING, 不可跳过)
+## MANDATORY STEP 3 — Verification Testing (BLOCKING, 不可跳过)
 
 **3.1 Test Execution**:
-- Single browser context for ALL tests
-- Reuse login state across tests
-- Use `locator.waitFor({ timeout: 5000 })` instead of `page.waitForTimeout()`
+- Use appropriate tools (browser automation, API calls, unit tests) based on task type
+- Share state across related tests where possible
+- Prefer explicit waits over arbitrary timeouts
 
 **3.2 Complexity-Based Evaluation**:
 
-| Complexity | Sprint Count | Test Items | Comment Length |
-|-----------|-------------|-----------|----------------|
-| Simple | ≤ 2 | 5-8 core | < 200 chars |
-| Medium | 3-5 | 15-20 | Standard |
-| Complex | > 5 | Full Contract | Detailed |
+| Complexity | Expected Items | Test Coverage | Report Detail |
+|-----------|---------------|--------------|---------------|
+| Simple | ≤ 2 | 5-8 core checks | Brief |
+| Medium | 3-5 | 15-20 checks | Standard |
+| Complex | > 5 | Full requirement list | Detailed |
 
 **3.3 Test Order**:
-1. Homepage reachable, /health returns 200
-2. Login with admin/admin123
-3. Contract items one by one (click, input, submit, navigate)
+1. Service reachable, health endpoint returns 200
+2. Authentication (if applicable)
+3. Core functionality item by item
 4. Edge cases (empty values, invalid input, permissions)
 
 ---
 
 ## MANDATORY STEP 4 — Generate Report (BLOCKING, 不可跳过)
 
-**Report Format — Simple Project**:
+**Report Format — Simple Task**:
 ```markdown
-## Sprint <N> Evaluation Report
+## Evaluation Report
 
 ### Result: PASS / FAIL
 
 ### Core Verification
 | Item | Status | Note |
 |---|---|---|
-| Page Load | PASS/FAIL | |
-| Form Submit | PASS/FAIL | |
-| Data Display | PASS/FAIL | |
+| Service Up | PASS/FAIL | |
+| Feature A | PASS/FAIL | |
+| Feature B | PASS/FAIL | |
 
 ### Defects (Critical Only)
 - <brief description>
@@ -93,9 +92,9 @@ curl -sf --max-time 10 -o /dev/null http://<DOMAIN>/
 <PASS / FAIL: needs fix>
 ```
 
-**Report Format — Medium/Complex Project**:
+**Report Format — Medium/Complex Task**:
 ```markdown
-## Sprint <N> Evaluation Report
+## Evaluation Report
 
 ### Result: PASS / FAIL
 
@@ -107,46 +106,41 @@ curl -sf --max-time 10 -o /dev/null http://<DOMAIN>/
 ### Detailed Defects
 **Issue 1**: <description>
 - Reproduce: <steps>
-- File: <file:line>
+- Location: <file:line>
 - Expected: <expected>
 - Actual: <actual>
 - Fix: <suggestion>
 
-### Design Score (1-10)
-- Design Quality: <score>
-- Originality: <score>
-
 ### Conclusion
-<PASS: proceed to Sprint N+1 / FAIL: fix required>
+<PASS: proceed / FAIL: fix required>
 ```
 
 ---
 
-## MANDATORY STEP 5 — Writeback to Issue (BLOCKING, 不可跳过)
+## MANDATORY STEP 5 — Writeback Feedback (BLOCKING, 不可跳过)
 
-**这一步是 BLOCKING 的。不写评论，评估不算完成。**
+**这一步是 BLOCKING 的。不写反馈，评估不算完成。**
 
-**5.1 Check CLI Availability**:
-```bash
-which multica && echo "CLI_OK" || echo "CLI_MISSING"
-```
+**5.1 Check Write Channel**:
+Verify your feedback channel is available (API, CLI, file system, etc.).
 
 **5.2 Send Report**:
+Use your available tool to write the report:
 ```bash
-multica issue comment add <ISSUE_ID> --content "<report>"
-multica issue status <ISSUE_ID> in_progress
-multica issue assign <ISSUE_ID> <GENERATOR_AGENT_ID>
+# Example — adapt to your platform:
+<YOUR_TOOL> write-feedback <TASK_ID> --content "<report>"
+<YOUR_TOOL> update-status <TASK_ID> in_progress
 ```
 
-**CHECKPOINT**: After sending, run:
+**CHECKPOINT**: After sending, verify the feedback exists:
 ```bash
-multica issue get <ISSUE_ID> --output json
+<YOUR_TOOL> get-task <TASK_ID>
 ```
-- Confirm `comments` array is non-empty and contains this report
+- Confirm feedback array is non-empty and contains this report
 - If not present: Wait 3s → Retry → Retry 2 more times
-- Still failing → Save full report to `eval_report.md` with `[multica API write failed]`
+- Still failing → Save full report to `eval_report.md` with `[feedback write failed]`
 
-**绝对禁止**: Completing evaluation without writing comments or saving report to any location.
+**绝对禁止**: Completing evaluation without writing feedback or saving report to any location.
 
 ---
 
@@ -156,8 +150,8 @@ multica issue get <ISSUE_ID> --output json
 |----------|--------|
 | Local validation fails | STOP, fix, return to Step 3 |
 | Deploy lock occupied | Sleep 60s, retry 5 times max |
-| Deploy failure | Release lock → Comment with error log → Mark blocked |
-| Comment send failure | Retry 3 times → Save to local file |
-| Stats API returns error | Check backend aggregation SQL, ensure empty data returns 0 |
-| Evaluator doesn't write comment | Generator proactively asks when receiving in_review with no report |
-| Marking blocked without comment | ABSOLUTELY PROHIBITED. Any blocked MUST have comment first. |
+| Deploy failure | Release lock → Report with error log → Mark blocked |
+| Feedback send failure | Retry 3 times → Save to local file |
+| Stats API returns error | Check backend, ensure empty data returns 0 |
+| Evaluator doesn't write feedback | Prior Agent proactively asks when receiving no report |
+| Marking blocked without feedback | ABSOLUTELY PROHIBITED. Any blocked MUST have feedback first. |

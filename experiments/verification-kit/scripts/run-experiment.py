@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-MB-Protocol Verification Script
+Mandatory Blocking Skills — Verification Script
 Automated experiment runner to collect reproducible data.
 
 Usage:
@@ -100,7 +100,7 @@ def run_single_experiment(mode, index):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="MB-Protocol Verification Experiment")
+    parser = argparse.ArgumentParser(description="Mandatory Blocking Skills Verification Experiment")
     parser.add_argument("--mode", choices=["baseline", "mb-protocol"], required=True,
                         help="Experiment mode: baseline (no MB-Protocol) or mb-protocol (with MB-Protocol)")
     parser.add_argument("--count", type=int, default=5,
@@ -110,7 +110,7 @@ def main():
     args = parser.parse_args()
 
     print("="*60)
-    print("MB-Protocol Verification Experiment")
+    print("Mandatory Blocking Skills — Verification Experiment")
     print("="*60)
     print(f"Mode: {args.mode}")
     print(f"Count: {args.count}")

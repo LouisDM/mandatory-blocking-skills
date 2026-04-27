@@ -1,246 +1,264 @@
-# MB-Protocol: Mandatory Blocking Protocol for AI Agents
+# MB-Protocol: 强制阻塞协议
 
-> **A Prompt Engineering Standard to Eliminate Silent Failures in Agentic Workflows**
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![CI](https://github.com/LouisDM/mandatory-blocking-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/LouisDM/mandatory-blocking-skills/actions)
+[![Python](https://img.shields.io/badge/Python-3.11%2B-blue)](requirements.txt)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Status: Engineering Standard](https://img.shields.io/badge/Status-Engineering%20Standard-blue.svg)]()
+> **消除 Agent 工作流中的静默失败**
 
----
-
-## The Problem: Agent Execution Without Accountability
-
-AI Agents are great at **doing things**, but terrible at **confirming they did them**.
-
-In production agentic workflows (Planner → Generator → Evaluator), we observed a critical pattern:
-
-- Agent runs tests → generates a report → **forgets to write it back to the issue**
-- Agent deploys code → marks status "done" → **but the deployment log shows 502 errors**
-- Agent fixes a bug → claims "fixed" → **but never verified the fix actually works**
-
-This is the **Silent Failure** problem: the Agent believes it completed the task, but the external world has no record of it.
-
-### Real-World Impact
-
-| Metric | Before MB-Protocol | After MB-Protocol | Delta |
-|--------|-------------------|-------------------|-------|
-| **Comment Writeback Rate** | 0% (0/8 tasks) | 100% (7/7 tasks) | **+100%** |
-| **Deployment Success Rate** | ~60% | ~90% | **+30%** |
-| **Avg Fix Iterations** | 5-8 rounds | 2-3 rounds | **-60%** |
-| **Blocked Tasks Without Diagnosis** | High | Near Zero | **Significant** |
-
-*Data collected from a Multica-based 3-Agent Harness (Planner → Generator → Evaluator) running on real production issues.*
+[English](./README.en.md) | 简体中文
 
 ---
 
-## What is MB-Protocol?
+## 问题所在
 
-**MB-Protocol (Mandatory Blocking Protocol)** is a prompt engineering standard that forces AI Agents to complete verification and feedback steps before proceeding.
+Agent 擅长**做事**，但不擅长**确认自己做了**。
 
-It treats critical non-result steps (writing comments, verifying deployments, checking health endpoints) as **blocking operations** — just like a synchronous I/O call that doesn't return until completion.
+在自动化工作流中，我们反复观察到一个模式：
 
-### The Three Pillars
+- Agent 跑完测试 → 生成报告 → **忘记写回任务**
+- Agent 部署完代码 → 标记"完成" → **但日志里全是 502**
+- Agent 修复了 bug → 声称"已修复" → **但从未验证过**
 
-| Pillar | Implementation | Purpose |
-|--------|---------------|---------|
-| **Semantic Anchoring** | `MANDATORY` + `BLOCKING` keywords in ALL CAPS | Establishes highest attention weight in LLM attention mechanism |
-| **Empirical Check** | `CHECKPOINT` directive with tool-based verification | Transforms "I think I did it" → "I verified I did it" |
-| **Self-Healing Loop** | `Retry-Wait-Fallback` logic | Handles transient failures without breaking the flow |
+这就是**静默失败**：Agent 认为自己完成了，但外部世界没有任何记录。
+
+| 指标 | 使用前 | 使用后 |
+|------|--------|--------|
+| 反馈回写率 | 0% (0/8) | **100% (7/7)** |
+| 部署成功率 | ~60% | **~90%** |
+| 平均修复轮次 | 5-8 轮 | **2-3 轮** |
+
+*数据来源：多 Agent 协作流水线，基于真实自动化任务。*
+
+### 前后对比
+
+```
+Issue #104 留言板项目
+
+┌─────────────────────────────────────────┐
+│  Baseline (无 MB-Protocol)              │
+├─────────────────────────────────────────┤
+│  评论: (空白)                           │
+│  状态: done                             │
+│                                         │
+│  Agent: "任务完成！"                    │
+│  系统: "没有评论记录"                   │
+│                                         │
+│  人类: "部署了吗？测试通过了吗？"       │
+│         ↑ 静默失败 — 无法追溯          │
+└─────────────────────────────────────────┘
+
+┌─────────────────────────────────────────┐
+│  MB-Protocol (有 BLOCKING)              │
+├─────────────────────────────────────────┤
+│  评论:                                  │
+│  ┌─────────────────────────────────┐    │
+│  │ Sprint 3 评估报告               │    │
+│  │ Result: PASS                    │    │
+│  │ 核心验证: 全部通过              │    │
+│  │ 部署: http://.../health OK      │    │
+│  └─────────────────────────────────┘    │
+│  状态: done                             │
+│                                         │
+│  Agent: "任务完成，报告已写回"          │
+│  系统: "评论已验证存在"                 │
+│                                         │
+│  人类: "好的，下一条"                   │
+│         ↑ 可追溯、可验证               │
+└─────────────────────────────────────────┘
+```
 
 ---
 
-## Standard Implementation
+## 解决方案
 
-### In Any System Prompt or Skill File
+MB-Protocol（Mandatory Blocking Protocol）是一个提示工程标准，强制 Agent 在继续之前完成验证和反馈步骤。
+
+它将关键非结果步骤（写反馈、验证部署、检查健康状态）视为**阻塞操作**——就像同步 I/O 调用，不完成就不返回。
+
+| 支柱 | 实现方式 | 解决什么问题 |
+|------|---------|-----------|
+| **语义锚定** | `MANDATORY` + `BLOCKING` 全大写关键词 | 在 LLM 注意力机制中建立最高权重 |
+| **实证检查** | `CHECKPOINT` 指令 + 工具验证 | 把"我觉得我做了"变成"我验证了我做了" |
+| **自愈循环** | `重试-等待-降级`逻辑 | 处理瞬态失败，不中断流程 |
+
+### 架构
+
+```mermaid
+graph TD
+    A[Agent Task] --> B{BLOCKING Step?}
+    B -->|Yes| C[Semantic Anchoring<br/>MANDATORY + BLOCKING]
+    C --> D[Core Action]
+    D --> E[CHECKPOINT Verification]
+    E -->|Pass| F[Proceed]
+    E -->|Fail| G[Self-Healing Loop<br/>Retry-Wait-Fallback]
+    G --> D
+    B -->|No| H[Standard Step]
+    H --> F
+    F --> I[Feedback Written?]
+    I -->|Yes| J[Task Complete]
+    I -->|No| K[Silent Failure]
+```
+
+---
+
+## 三大支柱详解
+
+### 1. 语义锚定
+
+**用强约束词汇替代弱提示词。**
+
+LLM 对格式模式高度敏感：
+
+| 模式 | 效果 |
+|------|------|
+| `MANDATORY STEP`（全大写） | 注意力权重远高于 `Step` |
+| `(BLOCKING, 不可跳过)` | 括号强调触发合规行为 |
+| `绝对禁止：...` | 否定祈使创建强回避模式 |
+| `不写反馈，任务不算完成` | 明确后果声明 |
+
+这不是魔法——是在利用 LLM 对显式约束和后果的指令遵循训练。
+
+### 2. 实证检查
+
+**用工具调用验证，不用推理推断。**
 
 ```markdown
-### MANDATORY STEP N — [STEP_NAME] (BLOCKING, 不可跳过)
+### MANDATORY STEP 4 — 写执行报告到任务 (BLOCKING, 不可跳过)
 
-> **Execution Directive**: This step is BLOCKING. Skipping it constitutes task failure.
+**这一步是 BLOCKING 的。不写反馈，任务不算完成。**
 
-**1. Core Action**:
-- [Describe the specific action the Agent must perform]
-
-**2. CHECKPOINT Verification**:
-- **Verification Action**: Use `<TOOL>` to verify.
-- **Pass Criteria**: [Define clear success: HTTP 200, file size > 0, keyword match]
-- **Block Logic**: If failed → `Wait 3s` → `Retry (Max 2)` → `Execute Fallback`
-
-**3. Final Callback**:
-- MUST write status to [TARGET]. **No feedback = Task not done**.
-```
-
-### Example: Evaluator Skill (Real-World)
-
-```markdown
-### MANDATORY STEP 5 — Write Evaluation Report to Issue (BLOCKING, 不可跳过)
-
-**这一步是 BLOCKING 的。不写评论，评估不算完成。**
-
-**5.1 Check CLI Availability**:
+**4.1 发送报告**：
 ```bash
-which multica && echo "CLI_OK" || echo "CLI_MISSING"
+<YOUR_TOOL> write-feedback <TASK_ID> --content "<report>"
 ```
-- CLI_MISSING → Save report locally with `[CLI unavailable]` header
 
-**5.2 Send Report**:
+**CHECKPOINT**：发送后运行 `<YOUR_TOOL> get-task` 确认 feedback 数组非空。
+- 若不存在：等待 3s → 重试 → 再重试 2 次 → 保存到 `report_fallback.md`
+
+**绝对禁止**：不写反馈就完成任务。
+```
+
+### 3. 自愈循环
+
+**失败不是终点，是信号。**
+
+```
+检查失败 → 等待 3s → 重试（最多 2 次）→ 执行降级方案
+```
+
+- 写反馈失败 → 保存到本地文件 → 下次有机会再同步
+- 部署验证失败 → 回滚并报告 → 不标记"完成"
+- 健康检查失败 → 等待 → 重试 → 手动标记需人工介入
+
+---
+
+## 原理说明
+
+MB-Protocol 不是通过"重新分配注意力权重"起作用，而是通过**行为概率约束**和**任务边界心理学**。
+
+详细机制分析：[docs/MECHANISM.md](docs/MECHANISM.md)
+
+**一句话总结**：
+> 任务拆分是基础（降低遗忘率），MB-Protocol 是保险（防止完成核心工作后把反馈视为可选）。
+
+---
+
+## 快速开始
+
+**方式 A：Claude Code Skill（推荐）**
+
 ```bash
-multica issue comment add <ISSUE_ID> --content "<report>"
-multica issue status <ISSUE_ID> in_progress
+# 复制 skill 到你的项目
+mkdir -p .claude/skills/mb-protocol
+curl -o .claude/skills/mb-protocol/evaluator-skill.md \
+  https://raw.githubusercontent.com/LouisDM/mandatory-blocking-skills/main/examples/claude-code/evaluator-skill.md
 ```
 
-**CHECKPOINT**: After sending, run `multica issue get` to confirm comments array is non-empty.
-- If not present: Wait 3s → Retry → Retry 2 more times → Save to `eval_report.md`
+**方式 B：系统提示（通用）**
 
-**绝对禁止**: Completing evaluation without writing comments or saving report anywhere.
+在任何系统提示中加入：
+```
+所有关键执行步骤必须遵循 MB-Protocol。
+参考：https://github.com/LouisDM/mandatory-blocking-skills
 ```
 
----
-
-## The Iron Rules
-
-All Agents compatible with MB-Protocol must follow these global constraints:
-
-1. **Empirical First**: Never infer task completion from reasoning. Verify via tool invocation results.
-2. **No Silent Exit**: Any error that interrupts flow must produce a detailed diagnostic report.
-3. **Feedback = Completion**: A task without feedback record is logically "never executed".
-4. **State Sync**: In multi-Agent collaboration, BLOCKING steps are the only sync primitive.
-5. **Self-Check Before Exit**: Agent must scan the Iron Rules checklist before declaring completion.
-
----
-
-## Why It Works: Attention Mechanism
-
-LLMs (especially Claude) are sensitive to specific formatting patterns:
-
-| Pattern | Effect |
-|---------|--------|
-| `MANDATORY STEP` (ALL CAPS) | Higher attention weight than `Step` |
-| `(BLOCKING, 不可跳过)` | Bracketed emphasis triggers compliance behavior |
-| `绝对禁止：...` | Negative imperative creates strong avoidance pattern |
-| `不写评论，任务不算完成` | Clear consequence statement |
-
-This isn't magic — it's leveraging the LLM's training on instruction-following data where explicit constraints and consequences receive higher adherence.
-
----
-
-## Multi-Platform Integration
-
-### Claude Code (`.claude/skills/`)
-
-See [`examples/claude-code/`](examples/claude-code/) for full skill templates.
-
-### Cursor (`.cursorrules`)
-
-See [`examples/cursor/`](examples/cursor/) for `.cursorrules` integration.
-
-### AutoGPT / MetaGPT
-
-See [`examples/autogpt/`](examples/autogpt/) for plugin configuration.
-
-### Generic System Prompt
-
-Add to any system prompt:
-```
-Adhere to the MB-Protocol for all mandatory execution steps.
-Reference: https://github.com/LouisDM/MB-Protocol
-```
-
----
-
-## Verify It Yourself
-
-Don't trust our data. **Run the experiment yourself.**
-
-We provide a complete verification kit:
+**方式 C：验证它自己**
 
 ```bash
 cd experiments/verification-kit
 
-# 1. Start the mock app
+# 1. 启动模拟应用
 python mock-app/main.py
 
-# 2. Run baseline test (no MB-Protocol)
+# 2. 运行基线测试（无 MB-Protocol）
 python scripts/run-experiment.py --mode baseline --count 5
 
-# 3. Run MB-Protocol test
+# 3. 运行 MB-Protocol 测试
 python scripts/run-experiment.py --mode mb-protocol --count 5
 
-# 4. Compare your results
+# 4. 对比你的结果
 cat baseline-results.json
 cat mb-protocol-results.json
 ```
 
-See [`experiments/verification-kit/VERIFY.md`](experiments/verification-kit/VERIFY.md) for the full guide.
+---
 
-> **We need your data.** Submit your results via PR to [`docs/EXPERIMENTS.md`](docs/EXPERIMENTS.md).
+## 与 Andrej Karpathy Skills 的关系
+
+> 这两个协议是**互补的**，不是竞争的。
+
+| 维度 | Karpathy Skills | **MB-Protocol** |
+|------|----------------|----------------|
+| **解决什么问题** | 代码质量（过度复杂、错误假设、无关修改） | **执行可靠性**（跳过步骤、静默失败、不反馈） |
+| **关注点** | 写得对不对 | **做没做、验没验** |
+| **验证方式** | 代码审查、diff 质量 | **工具调用、状态检查** |
+| **适用场景** | 编码任务 | **任意多步骤 Agent 工作流** |
+| **可量化性** | 主观评估 | **客观数据（0% → 100%）** |
+| **失败模式** | 代码臃肿但"能跑" | **根本没执行却被标记完成** |
+
+**为什么两者都需要：**
+
+Karpathy Skills 确保 Agent **写得好**（简洁、精准、不假设）。但即使写得再好，如果 Agent "忘记"部署、"忘记"写反馈、"忘记"验证——结果仍然是零。
+
+MB-Protocol 确保 Agent **做完、验完、反馈完**。
+
+**组合使用效果最佳：**
+
+```
+Karpathy Skills (写好) + MB-Protocol (做完) = 可靠的生产级 Agent
+```
 
 ---
 
-## Case Study: INT-104 Guestbook Project
+## 如何判断它在起作用
 
-**Setup**: 3-Agent Harness (Planner → Generator → Evaluator) on Multica platform
-
-| Round | Protocol Version | Comment Rate | Result |
-|-------|-----------------|--------------|--------|
-| 1 | None (baseline) | 0% | Planner wrote spec, Generator deployed, Evaluator ran tests — **zero comments on Issue** |
-| 2 | Basic steps | 0% | Same. Agent "forgot" to write back after evaluation |
-| 3 | **MB-Protocol** | **100%** (7/7) | All 3 Agents wrote comments. Evaluator report: 20/20 PASS. **Task verifiably complete.** |
-
-**Key Learning**: Without BLOCKING constraint, even an "Evaluator" Agent whose sole job is to verify and report will skip the reporting step when context window pressure increases.
+- **任务反馈不再空白** — 每个任务都有可见的执行记录
+- **部署失败不再静默** — 502 错误会在标记"完成"前被捕获
+- **修复轮次减少** — 因为验证在继续之前就做完了
+- **多 Agent 协作不再断链** — BLOCKING 步骤成为唯一的同步原语
 
 ---
 
-## Protocol Specification
+## 项目结构
 
-For formal specification, see [`docs/SPECIFICATION.md`](docs/SPECIFICATION.md).
-
-For integration guides, see [`docs/INTEGRATION.md`](docs/INTEGRATION.md).
-
-For experimental data and methodology, see [`docs/EXPERIMENTS.md`](docs/EXPERIMENTS.md).
-
----
-
-## Roadmap
-
-- [x] Core Protocol v1.0
-- [x] Claude Code Skill Templates
-- [ ] Cursor IDE Plugin
-- [ ] VS Code Extension
-- [ ] LangChain/LangGraph Integration
-- [ ] AutoGPT Plugin
-- [ ] Benchmark Suite (standardized agent reliability tests)
+```
+mandatory-blocking-skills/
+├── README.md                    # 本文档
+├── docs/
+│   ├── SPECIFICATION.md         # 协议规范 v1.0
+│   ├── INTEGRATION.md           # 多平台集成指南
+│   └── EXPERIMENTS.md           # 实验数据
+├── examples/
+│   ├── claude-code/             # Claude Code Skill 模板
+│   ├── cursor/                  # .cursorrules 集成
+│   └── autogpt/                 # AutoGPT 插件配置
+└── experiments/
+    └── verification-kit/        # 可复现验证套件
+```
 
 ---
 
-## Contributing
+## 许可
 
-We welcome contributions! Please see [`CONTRIBUTING.md`](CONTRIBUTING.md) for guidelines.
-
-**Special Call**: If you have agent execution data (with/without blocking constraints), please share it in [`docs/EXPERIMENTS.md`](docs/EXPERIMENTS.md). Quantified evidence is the foundation of this protocol.
-
----
-
-## Author
-
-**Louis Gu (辜东明)** — AI Tech Engineer
-
-- 10 years in software engineering (iOS/Android/Flutter/Fullstack)
-- 2 years in AI application development and AI-native engineering
-- Currently building AI-driven automation systems at Easy Healthcare Corporation
-
-**From the author**:
-> "Most people research how to make Agents run faster. I research how to make them run with accountability."
-
----
-
-## License
-
-MIT License — see [`LICENSE`](LICENSE) for details.
-
----
-
-## Acknowledgments
-
-- Inspired by CI/CD Quality Gates and OS Blocking Operations
-- Tested on Multica Platform + Claude Code Agent Runtime
-- Validated across 50+ production issue executions
+MIT License

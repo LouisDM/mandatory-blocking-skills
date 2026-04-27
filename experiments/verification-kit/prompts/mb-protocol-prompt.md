@@ -1,5 +1,5 @@
-# MB-Protocol Prompt (With BLOCKING Constraints)
-# This is the experimental group — full MANDATORY BLOCKING format.
+# MB-Protocol Prompt (Experimental Group)
+# Full MANDATORY BLOCKING format with Iron Rules.
 
 ## Iron Rules (Execute Before ANY Action)
 
@@ -24,43 +24,125 @@ curl http://localhost:8000/api/issues/{ISSUE_ID}
 
 ---
 
-## MANDATORY STEP 2 — Implement API (BLOCKING, 不可跳过)
+## Step 2 — Verify Environment
 
-**这一步是 BLOCKING 的。不实现不停止。**
+Check that the mock API is responsive:
+```bash
+curl http://localhost:8000/health
+curl http://localhost:8000/api/todos
+```
 
-Create FastAPI endpoints:
+---
+
+## Step 3 — Understand Requirements
+
+The Todo API should support:
 - POST /api/todos — create a todo
 - GET /api/todos — list all todos
 - DELETE /api/todos/{id} — delete a todo
 
-**CHECKPOINT**: After implementation, verify the endpoints exist:
+---
+
+## MANDATORY STEP 4 — Test Create Endpoint (BLOCKING, 不可跳过)
+
+**这一步是 BLOCKING 的。不测不继续。**
+
+Create a test todo:
 ```bash
-curl http://localhost:8000/api/todos
+curl -X POST http://localhost:8000/api/todos \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Test Todo","description":"Test description"}'
 ```
-- Must return HTTP 200
+
+**CHECKPOINT**: Response must contain `id`, `title`, and `completed: false`.
 - If failed → Debug → Retry
 
 ---
 
-## MANDATORY STEP 3 — Test API (BLOCKING, 不可跳过)
+## Step 5 — Test List Endpoint
 
-**这一步是 BLOCKING 的。不测不继续。**
-
-Run tests:
+List all todos:
 ```bash
-curl -X POST http://localhost:8000/api/todos \
-  -H "Content-Type: application/json" \
-  -d '{"title":"Test Todo","description":"Test"}'
-
 curl http://localhost:8000/api/todos
 ```
 
-**CHECKPOINT**: POST must return created todo, GET must list it.
-- If any test fails → Debug → Retry
+Verify the newly created todo appears.
 
 ---
 
-## MANDATORY STEP 4 — Write Report to Issue (BLOCKING, 不可跳过)
+## Step 6 — Test Edge Cases
+
+Test with empty title:
+```bash
+curl -X POST http://localhost:8000/api/todos \
+  -H "Content-Type: application/json" \
+  -d '{"title":"","description":""}'
+```
+
+---
+
+## Step 7 — Verify Data Persistence
+
+Re-run list to confirm data persists:
+```bash
+curl http://localhost:8000/api/todos
+```
+
+---
+
+## Step 8 — Check Response Format
+
+Verify JSON formatting and content-type headers.
+
+---
+
+## Step 9 — Document Results Internally
+
+Note which tests passed and which failed.
+
+---
+
+## Step 10 — Summarize Findings
+
+Form a summary: tests run, passed, issues encountered.
+
+---
+
+## Step 11 — Cleanup (Optional)
+
+Reset if needed:
+```bash
+curl -X POST http://localhost:8000/reset
+```
+
+Do not use unless necessary.
+
+---
+
+## Step 12 — Final Verification
+
+```bash
+curl http://localhost:8000/health
+curl http://localhost:8000/api/todos
+```
+
+---
+
+## Step 13 — Review Constraints
+
+- Todo CRUD works
+- Tests pass
+- Results are documented
+
+---
+
+## Step 14 — Assess Completion
+
+Core requirements met? Proceed to reporting.
+
+---
+
+## MANDATORY STEP 15 — Write Report to Issue (BLOCKING, 不可跳过)
 
 **这一步是 BLOCKING 的。不写评论，任务不算完成。**
 

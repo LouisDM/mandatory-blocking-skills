@@ -1,24 +1,24 @@
 """
-MB-Protocol Plugin for AutoGPT
-================================
+Mandatory Blocking Plugin for AutoGPT
+======================================
 This plugin enforces Mandatory Blocking checkpoints in AutoGPT's command chain.
 
 Usage:
     Add to AutoGPT's plugins directory and enable in .env:
-    USE_MB_PROTOCOL=true
+    USE_MANDATORY_BLOCKING=true
 """
 
 from autogpt_plugin_template import AutoGPTPluginTemplate
 from typing import Any, Dict, List, Optional, Tuple
 
-class MBProtocolPlugin(AutoGPTPluginTemplate):
+class MandatoryBlockingPlugin(AutoGPTPluginTemplate):
     """
-    Enforces MB-Protocol checkpoints before and after critical commands.
+    Enforces Mandatory Blocking checkpoints before and after critical commands.
     """
 
     def __init__(self):
         super().__init__()
-        self._name = "MB-Protocol"
+        self._name = "Mandatory Blocking"
         self._version = "1.0.0"
         self._description = "Mandatory Blocking Protocol for reliable agent execution"
         self.blocking_commands = [
@@ -34,7 +34,7 @@ class MBProtocolPlugin(AutoGPTPluginTemplate):
             verification = self._verify_command(command_name, response)
             if not verification["passed"]:
                 return (
-                    f"[MB-Protocol BLOCKING] Command '{command_name}' failed verification.\n"
+                    f"[MANDATORY BLOCKING] Command '{command_name}' failed verification.\n"
                     f"Error: {verification['error']}\n"
                     f"Required: Retry or execute fallback."
                 )

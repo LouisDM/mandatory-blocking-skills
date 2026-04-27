@@ -1,5 +1,5 @@
 """
-Mock Application for MB-Protocol Verification
+Mock Application for Mandatory Blocking Skills Verification
 A simple FastAPI app with:
 - Issue tracking API (create issue, add comment, get status)
 - Todo CRUD API (what the Agent will implement)
@@ -13,7 +13,7 @@ from typing import List, Optional
 from datetime import datetime
 import uuid
 
-app = FastAPI(title="MB-Protocol Verification Mock")
+app = FastAPI(title="Mandatory Blocking Skills Verification Mock")
 
 # In-memory storage
 issues_db = {}
